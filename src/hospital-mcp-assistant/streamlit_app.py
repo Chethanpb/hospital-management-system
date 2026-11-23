@@ -13,6 +13,25 @@ from hospital_mcp.host import (
 )
 
 st.set_page_config(page_title="Hospital Assistant", page_icon="✚", layout="wide")
+st.html("""
+<style>
+.stMainBlockContainer {max-width: 64rem; padding-top: clamp(3rem, 7vh, 6rem);}
+.hospital-header {
+    background: linear-gradient(115deg, #103d40, #14625c);
+    color: #fff; padding: clamp(1.5rem, 4vw, 3rem);
+    border-radius: 1.25rem; margin-bottom: 1rem;
+}
+.hospital-header h1 {
+    font-family: Georgia, serif; font-weight: 500; color: inherit;
+    font-size: clamp(2.2rem, 5vw, 3.8rem); padding: 0; line-height: 1.12;
+}
+.hospital-header p {color: #dbefea; margin: .85rem 0 0; max-width: 45ch;}
+[data-testid="stChatMessage"] {border-radius: 1rem; padding: 1.15rem;}
+[data-testid="stSidebar"] .stButton button,
+.st-key-starters button {border-radius: .75rem;}
+.st-key-starters button {min-height: 4rem;}
+</style>
+""")
 state = st.session_state
 state.setdefault("messages", [{"role": "system", "content": SYSTEM_PROMPT}])
 state.setdefault("chat_history", [])
@@ -38,7 +57,24 @@ with st.sidebar:
     for title in reversed(state.chat_history[-10:]):
         st.text(title)
 
-st.title("Hospital Assistant")
+st.html("""
+<header class="hospital-header">
+  <h1>Hospital Assistant</h1>
+  <p>Look up hospital records and manage appointments in the demo database.</p>
+</header>
+""")
+starter = None
+if len(state.messages) == 1:
+    with st.container(key="starters"):
+        st.subheader("Where would you like to start?")
+        options = [
+            ("Find a doctor", "stethoscope", "Help me find a doctor by specialty."),
+            ("Look up lab results", "science", "Help me look up a patient's lab results."),
+            ("Book an appointment", "calendar_month", "Help me schedule an appointment."),
+        ]
+        for column, (label, icon, question) in zip(st.columns(3), options):
+            if column.button(label, icon=f":material/{icon}:", use_container_width=True):
+                starter = question
 for message in state.messages:
     if message["role"] in ("assistant", "user") and message.get("content"):
         with st.chat_message(message["role"]):
@@ -130,7 +166,7 @@ elif state.messages[-1]["role"] in ("user", "tool") or calls:
         st.stop()
 else:
     typed_prompt = st.chat_input("Ask about records or appointments…")
-    prompt = typed_prompt
+    prompt = starter or typed_prompt
     if not prompt:
         st.stop()
     if len(state.messages) == 1:
