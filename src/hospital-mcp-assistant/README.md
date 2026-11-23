@@ -49,8 +49,8 @@ allowed to execute database operations.
 | `get_lab_results(patient_id)` | Retrieve a patient's lab history | No |
 | `search_doctor(specialization)` | Search active doctors | No |
 | `check_medicine_stock(medicine)` | Check an exact medicine name | No |
-| `schedule_appointment(patient_id, doctor_id, appointment_at)` | Create an appointment | Yesâ€”approval required |
-| `cancel_appointment(appointment_id)` | Cancel an appointment | Yesâ€”approval required |
+| `schedule_appointment(patient_id, doctor_id, appointment_at)` | Create an appointment | Yes—approval required |
+| `cancel_appointment(appointment_id)` | Cancel an appointment | Yes—approval required |
 
 Two arguments intentionally differ from the original dictionary prototype:
 
@@ -63,26 +63,26 @@ Two arguments intentionally differ from the original dictionary prototype:
 
 ```text
 hospital-mcp-assistant/
-â”œâ”€â”€ database/
-â”‚   â”œâ”€â”€ schema.sql          # Tables, keys and indexes
-â”‚   â””â”€â”€ seed.sql            # Synthetic sample records
-â”œâ”€â”€ hospital_mcp/
-â”‚   â”œâ”€â”€ config.py           # Environment configuration
-â”‚   â”œâ”€â”€ client.py           # MCP connection, lifecycle and calls
-â”‚   â”œâ”€â”€ db.py               # Lazy MySQL connection pool
-â”‚   â”œâ”€â”€ errors.py           # Safe application exceptions
-â”‚   â”œâ”€â”€ host.py             # User UI, Groq and MCP client
-â”‚   â”œâ”€â”€ repository.py       # Parameterized SQL operations
-â”‚   â”œâ”€â”€ server.py           # FastMCP stdio server process
-â”‚   â”œâ”€â”€ tools.py            # Six registered hospital MCP tools
-â”‚   â””â”€â”€ validators.py       # Input validation
-â”œâ”€â”€ tests/
-â”œâ”€â”€ .env.example
-â”œâ”€â”€ docker-compose.yml
-â”œâ”€â”€ mcp_host.py             # Convenience host entry point
-â”œâ”€â”€ mcp_server.py           # Convenience server/Inspector entry point
-â”œâ”€â”€ requirements.txt
-â””â”€â”€ README.md
+├── database/
+│   ├── schema.sql          # Tables, keys and indexes
+│   └── seed.sql            # Synthetic sample records
+├── hospital_mcp/
+│   ├── config.py           # Environment configuration
+│   ├── client.py           # MCP connection, lifecycle and calls
+│   ├── db.py               # Lazy MySQL connection pool
+│   ├── errors.py           # Safe application exceptions
+│   ├── host.py             # User UI, Groq and MCP client
+│   ├── repository.py       # Parameterized SQL operations
+│   ├── server.py           # FastMCP stdio server process
+│   ├── tools.py            # Six registered hospital MCP tools
+│   └── validators.py       # Input validation
+├── tests/
+├── .env.example
+├── docker-compose.yml
+├── mcp_host.py             # Convenience host entry point
+├── mcp_server.py           # Convenience server/Inspector entry point
+├── requirements.txt
+└── README.md
 ```
 
 ## Requirements
@@ -266,7 +266,7 @@ required.
 
 ## Resume description
 
-**Hospital Database Assistant using MCP â€” Python, MySQL, MCP SDK, Groq API**
+**Hospital Database Assistant using MCP — Python, MySQL, MCP SDK, Groq API**
 
 - Built an MCP-based hospital assistant that translates natural-language
   requests into validated database tool calls.
@@ -315,3 +315,15 @@ docker compose up -d
 
 This deletes the local demonstration database and recreates it from the seed
 files.
+
+### Streamlit chat
+
+From the repository root, start the hospital database as described above, then run:
+
+```powershell
+cd src/hospital-mcp-assistant
+python -m pip install -r requirements.txt
+python -m streamlit run streamlit_app.py
+```
+
+The browser chat uses the existing Groq and MySQL environment settings. Appointment changes require approval in the chat.
